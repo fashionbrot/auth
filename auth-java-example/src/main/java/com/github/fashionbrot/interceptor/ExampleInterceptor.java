@@ -12,9 +12,12 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -26,13 +29,7 @@ public class ExampleInterceptor  implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        GetTokenFunction tokenFunction = ()->{
-            String token = request.getHeader("token");
-            if (ObjectUtil.isEmpty(token)){
-                token = request.getParameter("token");
-            }
-            return token;
-        };
+        GetTokenFunction tokenFunction = getGetTokenFunction(request);
 
 
         Integer userId = PermissionUtil.getToken(exampleService.getAlgorithm(), tokenFunction, tokenExpiredFunction, signatureVerificationFunction, "userId", Integer.class);
@@ -58,6 +55,27 @@ public class ExampleInterceptor  implements HandlerInterceptor {
 
 
         return true;
+    }
+
+    private static GetTokenFunction getGetTokenFunction(HttpServletRequest request) {
+        String tokenName= "token";
+        GetTokenFunction tokenFunction = ()->{
+            String token = request.getHeader(tokenName);
+            if (ObjectUtil.isEmpty(token)){
+                token = request.getParameter(tokenName);
+            }
+            if (ObjectUtil.isEmpty(token)) {
+                Cookie[] cookies = request.getCookies();
+                if (ObjectUtil.isNotEmpty(cookies)) {
+                    Optional<Cookie> first = Arrays.stream(cookies).filter(m -> tokenName.equals(m.getName())).findFirst();
+                    if (first.isPresent()) {
+                        token = first.get().getValue();
+                    }
+                }
+            }
+            return token;
+        };
+        return tokenFunction;
     }
 
     TokenExpiredFunction tokenExpiredFunction=(exception)->{
