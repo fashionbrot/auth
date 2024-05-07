@@ -1,3 +1,4 @@
 rootProject.name = 'auth'
 include 'auth-java'
+include 'auth-java-example'
 

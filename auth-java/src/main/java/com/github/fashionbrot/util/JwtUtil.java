@@ -130,6 +130,25 @@ public class JwtUtil {
         }
     }
 
+
+    /**
+     * 生成密钥对。
+     *
+     * @param algorithm 密钥对生成算法
+     * @param keySize   密钥长度
+     * @param secureRandom SecureRandom
+     * @return 生成的密钥对
+     */
+    public static KeyPair generateKeyPair(String algorithm, int keySize,SecureRandom secureRandom) {
+        try {
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(algorithm);
+            keyPairGenerator.initialize(keySize,secureRandom); // 设置密钥长度
+            return keyPairGenerator.generateKeyPair();
+        }catch (Exception e){
+            return null;
+        }
+    }
+
     /**
      * 生成指定长度的RSA密钥对。
      *
