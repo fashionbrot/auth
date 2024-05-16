@@ -32,7 +32,7 @@ public class ExampleInterceptor  implements HandlerInterceptor {
         GetTokenFunction tokenFunction = getGetTokenFunction(request);
 
 
-        Integer userId = PermissionUtil.getToken(exampleService.getAlgorithm(), tokenFunction, tokenExpiredFunction, signatureVerificationFunction, "userId", Integer.class);
+        Integer userId = PermissionUtil.getToken(exampleService.getAlgorithm(), tokenFunction, tokenExpiredFunction, "userId", Integer.class);
         if (userId==null){
             return false;
         }
@@ -78,13 +78,10 @@ public class ExampleInterceptor  implements HandlerInterceptor {
         return tokenFunction;
     }
 
-    TokenExpiredFunction tokenExpiredFunction=(exception)->{
-        AuthException.throwMsg("token以过期");
+    TokenExceptionFunction tokenExpiredFunction=(exception)->{
+        AuthException.throwMsg("token验证失败");
     };
 
-    SignatureVerificationFunction signatureVerificationFunction = (exception)->{
-        AuthException.throwMsg("验证签名失败");
-    };
 
     private Method getHandlerMethod(Object handler){
         if (handler!=null && handler instanceof HandlerMethod) {

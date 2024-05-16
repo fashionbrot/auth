@@ -1,8 +1,6 @@
 package com.github.fashionbrot.util;
 
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.SignatureVerificationException;
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.Claim;
 import com.github.fashionbrot.annotation.Permission;
 import com.github.fashionbrot.common.util.MethodUtil;
@@ -19,8 +17,7 @@ public class PermissionUtil {
 
     public static Map<String, Claim>  checkToken(Algorithm algorithm,
                                                  GetTokenFunction tokenFunction,
-                                                 TokenExpiredFunction tokenExpiredFunction,
-                                                 SignatureVerificationFunction signatureVerificationFunction){
+                                                 TokenExceptionFunction tokenExceptionFunction){
         if (tokenFunction==null){
             return null;
         }
@@ -32,13 +29,9 @@ public class PermissionUtil {
         Map<String, Claim> decode = null;
         try {
             decode = JwtUtil.decode(algorithm, token);
-        }catch (TokenExpiredException tokenExpiredException){
-            if (tokenExpiredFunction!=null){
-                tokenExpiredFunction.throwException(tokenExpiredException);
-            }
-        }catch (SignatureVerificationException signatureVerificationException){
-            if (signatureVerificationFunction!=null){
-                signatureVerificationFunction.throwException(signatureVerificationException);
+        }catch (Exception exception){
+            if (tokenExceptionFunction!=null){
+                tokenExceptionFunction.throwException(exception);
             }
         }
         return decode;
@@ -48,8 +41,7 @@ public class PermissionUtil {
      *
      * @param algorithm                     jwt加密算法
      * @param tokenFunction                 获取token函数
-     * @param tokenExpiredFunction          token失效回调函数
-     * @param signatureVerificationFunction 验证签名失败回调函数
+     * @param tokenExpiredFunction          验证token 失败异常
      * @param key                           生成token对应key
      * @param resultClass                   返回Class类型 Integer、Long、String、Boolean、Date、Double、Map、List
      * @return                              对应key的值
@@ -57,11 +49,10 @@ public class PermissionUtil {
      */
     public static <T> T getToken(Algorithm algorithm,
                                  GetTokenFunction tokenFunction,
-                                 TokenExpiredFunction tokenExpiredFunction,
-                                 SignatureVerificationFunction signatureVerificationFunction,
+                                 TokenExceptionFunction tokenExpiredFunction,
                                  String key,
                                  Class<T> resultClass){
-        Map<String, Claim> stringClaimMap = checkToken(algorithm, tokenFunction, tokenExpiredFunction, signatureVerificationFunction);
+        Map<String, Claim> stringClaimMap = checkToken(algorithm, tokenFunction, tokenExpiredFunction);
         if (ObjectUtil.isEmpty(stringClaimMap)){
             return null;
         }
@@ -70,11 +61,10 @@ public class PermissionUtil {
 
     public static <T> T getToken(Algorithm algorithm,
                                  GetTokenFunction tokenFunction,
-                                 TokenExpiredFunction tokenExpiredFunction,
-                                 SignatureVerificationFunction signatureVerificationFunction,
+                                 TokenExceptionFunction tokenExpiredFunction,
                                  Class<T> resultClass){
 
-        Map<String, Claim> stringClaimMap = checkToken(algorithm, tokenFunction, tokenExpiredFunction, signatureVerificationFunction);
+        Map<String, Claim> stringClaimMap = checkToken(algorithm, tokenFunction, tokenExpiredFunction);
 
         T t = newInstance(resultClass);
         if (ObjectUtil.isEmpty(stringClaimMap)){

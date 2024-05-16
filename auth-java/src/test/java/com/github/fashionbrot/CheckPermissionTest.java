@@ -6,8 +6,7 @@ import com.github.fashionbrot.common.util.MapUtil;
 import com.github.fashionbrot.common.util.SetUtil;
 import com.github.fashionbrot.exception.AuthException;
 import com.github.fashionbrot.function.GetTokenFunction;
-import com.github.fashionbrot.function.SignatureVerificationFunction;
-import com.github.fashionbrot.function.TokenExpiredFunction;
+import com.github.fashionbrot.function.TokenExceptionFunction;
 import com.github.fashionbrot.util.JwtUtil;
 import com.github.fashionbrot.util.PermissionUtil;
 import org.junit.Test;
@@ -69,7 +68,7 @@ public class CheckPermissionTest {
             return token;
         };
 
-        Map<String, Claim> stringClaimMap = PermissionUtil.checkToken(algorithm, tokenFunction,tokenExpiredFunction,signatureVerificationFunction);
+        Map<String, Claim> stringClaimMap = PermissionUtil.checkToken(algorithm, tokenFunction,tokenExpiredFunction);
         System.out.println(stringClaimMap);
     }
 
@@ -97,17 +96,15 @@ public class CheckPermissionTest {
             return token;
         };
 
-        TokenModel tokenModel = PermissionUtil.getToken(algorithm, tokenFunction,tokenExpiredFunction,signatureVerificationFunction,TokenModel.class);
+        TokenModel tokenModel = PermissionUtil.getToken(algorithm, tokenFunction,tokenExpiredFunction,TokenModel.class);
         System.out.println(tokenModel);
     }
 
-    TokenExpiredFunction tokenExpiredFunction = (exception)->{
-        AuthException.throwMsg("token 已过期");
+    TokenExceptionFunction tokenExpiredFunction = (exception)->{
+        AuthException.throwMsg("token 验证失败");
     };
 
-    SignatureVerificationFunction signatureVerificationFunction = (exception)->{
-        AuthException.throwMsg("token 验证签名失败");
-    };
+
 
 
     @Test
@@ -133,7 +130,7 @@ public class CheckPermissionTest {
             return token;
         };
 
-        ArrayList userId = PermissionUtil.getToken(algorithm, tokenFunction,tokenExpiredFunction,signatureVerificationFunction,"list",ArrayList.class);
+        ArrayList userId = PermissionUtil.getToken(algorithm, tokenFunction,tokenExpiredFunction,"list",ArrayList.class);
         System.out.println(userId);
     }
 
