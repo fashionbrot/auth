@@ -7,7 +7,12 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.github.fashionbrot.common.util.Base64Util;
 import com.github.fashionbrot.common.util.JavaUtil;
+import com.github.fashionbrot.common.util.MethodUtil;
+import com.github.fashionbrot.common.util.ObjectUtil;
+import com.github.fashionbrot.function.GetTokenFunction;
+import com.github.fashionbrot.function.TokenExceptionFunction;
 
+import java.lang.reflect.Field;
 import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -94,6 +99,7 @@ public class JwtUtil {
                 // signature
                 .sign(sign);
     }
+
 
 
     /**
@@ -280,6 +286,103 @@ public class JwtUtil {
             return "";
         }
         return Base64Util.encodeBase64String(privateKey.getEncoded());
+    }
+
+
+    public static Map<String, Claim>  checkToken(Algorithm algorithm,
+                                                 GetTokenFunction tokenFunction,
+                                                 TokenExceptionFunction tokenExceptionFunction){
+        if (tokenFunction==null){
+            return null;
+        }
+
+        String token = tokenFunction.getToken();
+        if (ObjectUtil.isEmpty(token)){
+            return null;
+        }
+        Map<String, Claim> decode = null;
+        try {
+            decode = JwtUtil.decode(algorithm, token);
+        }catch (Exception exception){
+            if (tokenExceptionFunction!=null){
+                tokenExceptionFunction.throwException(exception);
+            }
+        }
+        return decode;
+    }
+
+    /**
+     *
+     * @param algorithm                     jwt加密算法
+     * @param tokenFunction                 获取token函数
+     * @param tokenExpiredFunction          验证token 失败异常
+     * @param key                           生成token对应key
+     * @param resultClass                   返回Class类型 Integer、Long、String、Boolean、Date、Double、Map、List
+     * @return                              对应key的值
+     * @param <T>                           类型
+     */
+    public static <T> T getToken(Algorithm algorithm,
+                                 GetTokenFunction tokenFunction,
+                                 TokenExceptionFunction tokenExpiredFunction,
+                                 String key,
+                                 Class<T> resultClass){
+        Map<String, Claim> stringClaimMap = checkToken(algorithm, tokenFunction, tokenExpiredFunction);
+        if (ObjectUtil.isEmpty(stringClaimMap)){
+            return null;
+        }
+        return JwtUtil.get(stringClaimMap, key, resultClass);
+    }
+
+    public static <T> T getToken(Algorithm algorithm,
+                                 GetTokenFunction tokenFunction,
+                                 TokenExceptionFunction tokenExpiredFunction,
+                                 Class<T> resultClass){
+
+        Map<String, Claim> stringClaimMap = checkToken(algorithm, tokenFunction, tokenExpiredFunction);
+
+        T t = newInstance(resultClass);
+        if (ObjectUtil.isEmpty(stringClaimMap)){
+            return t;
+        }
+
+        if (t!=null) {
+            Field[] declaredFields = t.getClass().getDeclaredFields();
+            if (ObjectUtil.isNotEmpty(declaredFields)){
+                for (Field declaredField : declaredFields) {
+                    if (MethodUtil.isStaticOrFinal(declaredField)){
+                        continue;
+                    }
+                    declaredField.setAccessible(true);
+                    String name = declaredField.getName();
+                    if (!stringClaimMap.containsKey(name)){
+                        continue;
+                    }
+
+                    Object value = JwtUtil.get(stringClaimMap, name, declaredField.getType());
+                    if (value==null){
+                        continue;
+                    }
+
+                    try {
+                        declaredField.set(t,value);
+                    } catch (IllegalAccessException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+        return t;
+    }
+
+
+    public static  <T> T newInstance(Class<T> resultClass){
+        try {
+            return resultClass.newInstance();
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

@@ -5,6 +5,7 @@ import com.github.fashionbrot.common.util.SetUtil;
 import com.github.fashionbrot.exception.AuthException;
 import com.github.fashionbrot.function.*;
 import com.github.fashionbrot.service.ExampleService;
+import com.github.fashionbrot.util.JwtUtil;
 import com.github.fashionbrot.util.PermissionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -32,7 +33,7 @@ public class ExampleInterceptor  implements HandlerInterceptor {
         GetTokenFunction tokenFunction = getGetTokenFunction(request);
 
 
-        Integer userId = PermissionUtil.getToken(exampleService.getAlgorithm(), tokenFunction, tokenExpiredFunction, "userId", Integer.class);
+        Integer userId = JwtUtil.getToken(exampleService.getAlgorithm(), tokenFunction, tokenExpiredFunction, "userId", Integer.class);
         if (userId==null){
             return false;
         }
@@ -87,7 +88,6 @@ public class ExampleInterceptor  implements HandlerInterceptor {
         if (handler!=null && handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             Method method = handlerMethod.getMethod();
-
             return method;
         }
         return null;
