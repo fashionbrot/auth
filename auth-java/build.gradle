@@ -56,7 +56,7 @@ publishing {
             pom {
 
                 name = 'common-spring'
-                description = 'common-auth 认证框架 https://github.com/fashionbrot/common'
+                description = 'auth-java 认证框架 https://github.com/fashionbrot/auth'
                 url = 'https://github.com/fashionbrot/common.git'
                 packaging 'jar'
 
@@ -74,9 +74,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = 'scm:git:git://github.com/fashionbrot/common.git'
-                    developerConnection = 'scm:git:ssh://github.com/fashionbrot/common.git'
-                    url = 'https://github.com/fashionbrot/common.git'
+                    connection = 'scm:git:git://github.com/fashionbrot/auth.git'
+                    developerConnection = 'scm:git:ssh://github.com/fashionbrot/auth.git'
+                    url = 'https://github.com/fashionbrot/auth.git'
                 }
 
                 withXml {
