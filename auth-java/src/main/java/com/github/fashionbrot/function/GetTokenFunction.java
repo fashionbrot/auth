@@ -8,7 +8,7 @@ package com.github.fashionbrot.function;
 public interface GetTokenFunction  {
 
     /**
-     * @<code>
+     * {@code
      * <pre>
      *  private static GetTokenFunction getGetTokenFunction(HttpServletRequest request) {
      *     String tokenName = "token";
@@ -40,7 +40,7 @@ public interface GetTokenFunction  {
      *     };
      * }
      * </pre>
-     * </code>
+     * }
      * @return token
      */
     String getToken();

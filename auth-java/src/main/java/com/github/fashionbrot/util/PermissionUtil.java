@@ -12,7 +12,8 @@ public class PermissionUtil {
 
     /**
      * 验证权限
-     * @<code>
+     * {@code
+     *  <pre>
      *     获取method方法如下:
      *     private Method getHandlerMethod(Object handler){
      *         if (handler!=null && handler instanceof HandlerMethod) {
@@ -22,7 +23,8 @@ public class PermissionUtil {
      *         }
      *         return null;
      *     }
-     * </code>
+     * <pre/>
+     * }
      * @param method                接口对应方法
      * @param superAdminFunction    获取用户是否是超级管理员
      * @param permissionFunction    获取用户的权限
@@ -59,7 +61,8 @@ public class PermissionUtil {
 
     /**
      * 验证权限
-     * @<code>
+     * {@code
+     *  <pre>
      *     获取method方法如下:
      *     private Method getHandlerMethod(Object handler){
      *         if (handler!=null && handler instanceof HandlerMethod) {
@@ -69,7 +72,8 @@ public class PermissionUtil {
      *         }
      *         return null;
      *     }
-     * </code>
+     * <pre/>
+     * }
      * @param method                接口对应方法
      * @param superAdminFunction    获取用户是否是超级管理员
      * @param permissionFunction    获取用户的权限
@@ -91,7 +95,8 @@ public class PermissionUtil {
 
     /**
      * 验证权限
-     * @<code>
+     * {@code
+     *  <pre>
      *     获取method方法如下:
      *     private Method getHandlerMethod(Object handler){
      *         if (handler!=null && handler instanceof HandlerMethod) {
@@ -101,7 +106,8 @@ public class PermissionUtil {
      *         }
      *         return null;
      *     }
-     * </code>
+     * <pre/>
+     * }
      * @param method                接口对应方法
      * @param permissionFunction    获取用户的权限
      * @return boolean true代表验证通过 false验证不通过
@@ -114,7 +120,8 @@ public class PermissionUtil {
 
     /**
      * 验证权限
-     * @<code>
+     * {@code
+     *  <pre>
      *     获取method方法如下:
      *     private Method getHandlerMethod(Object handler){
      *         if (handler!=null && handler instanceof HandlerMethod) {
@@ -124,7 +131,8 @@ public class PermissionUtil {
      *         }
      *         return null;
      *     }
-     * </code>
+     * <pre/>
+     * }
      * @param method                接口对应方法
      * @param permissionFunction    获取用户的权限
      * @param annotationFunction    获取method注解的权限

@@ -68,7 +68,7 @@ public class CheckPermissionTest {
             return token;
         };
 
-        Map<String, Claim> stringClaimMap = PermissionUtil.checkToken(algorithm, tokenFunction,tokenExpiredFunction);
+        Map<String, Claim> stringClaimMap = JwtUtil.checkToken(algorithm, tokenFunction,tokenExpiredFunction);
         System.out.println(stringClaimMap);
     }
 
@@ -96,7 +96,7 @@ public class CheckPermissionTest {
             return token;
         };
 
-        TokenModel tokenModel = PermissionUtil.getToken(algorithm, tokenFunction,tokenExpiredFunction,TokenModel.class);
+        TokenModel tokenModel = JwtUtil.getToken(algorithm, tokenFunction,tokenExpiredFunction,TokenModel.class);
         System.out.println(tokenModel);
     }
 
@@ -130,7 +130,7 @@ public class CheckPermissionTest {
             return token;
         };
 
-        ArrayList userId = PermissionUtil.getToken(algorithm, tokenFunction,tokenExpiredFunction,"list",ArrayList.class);
+        ArrayList userId = JwtUtil.getToken(algorithm, tokenFunction,tokenExpiredFunction,"list",ArrayList.class);
         System.out.println(userId);
     }
 
