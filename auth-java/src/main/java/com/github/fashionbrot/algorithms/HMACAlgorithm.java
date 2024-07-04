@@ -59,7 +59,7 @@ class HMACAlgorithm extends Algorithm {
             Date issuedAt = authEncoder.getIssuedAt();
             Date expiresAt = authEncoder.getExpiresAt();
             if (!DateUtil.isDateBetweenInclusive(new Date(),issuedAt,expiresAt)){
-                throw new InvalidTokenException("token invalid");
+                throw new TokenExpiredException("token expired");
             }
             return authEncoder;
         } catch (IllegalStateException  | IllegalArgumentException e) {
