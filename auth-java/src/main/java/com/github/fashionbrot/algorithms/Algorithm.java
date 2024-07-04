@@ -30,12 +30,7 @@ public abstract class Algorithm {
     }
 
 
-    /**
-     * Verify the given token using this Algorithm instance.
-     *  @param token
-     * @throws InvalidTokenException            invalid token
-     * @throws SignatureVerificationException   verification fail
-     */
+
     public abstract <T extends AuthEncoder>T verify(Class<T> clazz,String token) throws InvalidTokenException, SignatureVerificationException, TokenExpiredException;
 
 
