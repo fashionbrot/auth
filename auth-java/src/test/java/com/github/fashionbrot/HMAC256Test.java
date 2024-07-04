@@ -1,7 +1,6 @@
 package com.github.fashionbrot;
 
 import com.github.fashionbrot.algorithms.Algorithm;
-import com.github.fashionbrot.common.date.DateUtil;
 import com.github.fashionbrot.exception.AuthException;
 import com.github.fashionbrot.exception.InvalidTokenException;
 import com.github.fashionbrot.exception.SignatureVerificationException;
@@ -54,7 +53,6 @@ public class HMAC256Test {
         auth.setUserId(12L);
         auth.setMobile("18888888888");
 
-        String secret = "12345678";
 
         Algorithm algorithm=Algorithm.HMAC256(secret);
 
