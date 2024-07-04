@@ -2,7 +2,6 @@ package com.github.fashionbrot.util;
 
 import com.github.fashionbrot.AuthEncoder;
 import com.github.fashionbrot.algorithms.Algorithm;
-import com.github.fashionbrot.common.util.ObjectUtil;
 import com.github.fashionbrot.exception.InvalidTokenException;
 import com.github.fashionbrot.exception.SignatureVerificationException;
 import com.github.fashionbrot.exception.TokenExpiredException;
@@ -61,7 +60,7 @@ public class AuthUtil {
             return null;
         }
         String token = tokenFunction.getToken();
-        if (ObjectUtil.isEmpty(token)){
+        if (token==null || token.isEmpty()){
             return null;
         }
         try {

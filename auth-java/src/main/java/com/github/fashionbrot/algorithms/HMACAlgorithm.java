@@ -5,7 +5,6 @@ package com.github.fashionbrot.algorithms;
 import com.github.fashionbrot.AuthEncoder;
 import com.github.fashionbrot.common.date.DateUtil;
 import com.github.fashionbrot.common.tlv.TLVUtil;
-import com.github.fashionbrot.common.util.ObjectUtil;
 import com.github.fashionbrot.exception.InvalidTokenException;
 import com.github.fashionbrot.exception.SignatureVerificationException;
 import com.github.fashionbrot.exception.TokenExpiredException;
@@ -40,7 +39,7 @@ class HMACAlgorithm extends Algorithm {
     public <T extends AuthEncoder> T verify(Class<T> clazz,String token) throws InvalidTokenException, SignatureVerificationException, TokenExpiredException {
         try {
             String[] tokenSplit = token.split("\\.");
-            if (ObjectUtil.isEmpty(tokenSplit) || tokenSplit.length!=2){
+            if (tokenSplit==null  || tokenSplit.length!=2){
                 throw new InvalidTokenException("Invalid token");
             }
             String payload = tokenSplit[0];

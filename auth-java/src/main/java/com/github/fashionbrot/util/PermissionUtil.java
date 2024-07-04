@@ -1,7 +1,6 @@
 package com.github.fashionbrot.util;
 
 import com.github.fashionbrot.annotation.Permission;
-import com.github.fashionbrot.common.util.ObjectUtil;
 import com.github.fashionbrot.function.*;
 import java.lang.reflect.Method;
 import java.util.Set;
@@ -47,7 +46,7 @@ public class PermissionUtil {
         }
         String[] requiredPermissions = annotationFunction.value(method);
         // Check method-level permissions
-        if (ObjectUtil.isNotEmpty(requiredPermissions)) {
+        if (requiredPermissions!=null && requiredPermissions.length>0) {
             Set<String> userPermissions = permissionFunction.getPermission();
             for (String permission : requiredPermissions) {
                 if (permission!=null && userPermissions.contains(permission)) {
