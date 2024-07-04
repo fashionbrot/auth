@@ -11,12 +11,12 @@ import com.github.fashionbrot.function.TokenExceptionFunction;
 import com.github.fashionbrot.util.AuthUtil;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
 public class HMAC256Test {
 
+    private static final String secret = "+f+KCxF5UVl+O1a+sfafasfs/IDlfkadasfDfsuVXbMp5M8bOvqj1VEmGoB7IEn+";
 
     @Test
     public void test(){
@@ -29,8 +29,6 @@ public class HMAC256Test {
         auth.setExpiresAt(addHours(date,1));
         auth.setUserId(12L);
         auth.setMobile("18888888888");
-
-        String secret = "12345678";
 
 
         String token = AuthUtil.encryptHMAC256(secret, auth);

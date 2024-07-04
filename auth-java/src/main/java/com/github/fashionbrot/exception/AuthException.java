@@ -1,11 +1,8 @@
 package com.github.fashionbrot.exception;
 
 import com.github.fashionbrot.function.ThrowMsgFunction;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
+
 public class AuthException extends RuntimeException {
 
     private int code;
@@ -25,6 +22,21 @@ public class AuthException extends RuntimeException {
     }
 
 
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
 
     public static void throwMsg(String msg){
         throw new AuthException(msg);

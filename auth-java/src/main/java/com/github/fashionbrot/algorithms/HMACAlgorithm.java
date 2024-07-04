@@ -9,7 +9,6 @@ import com.github.fashionbrot.common.util.ObjectUtil;
 import com.github.fashionbrot.exception.InvalidTokenException;
 import com.github.fashionbrot.exception.SignatureVerificationException;
 import com.github.fashionbrot.exception.TokenExpiredException;
-import com.github.fashionbrot.util.AuthUtil;
 
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
@@ -18,16 +17,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Date;
 
-/**
- * Subclass representing an Hash-based MAC signing algorithm
- * <p>
- * This class is thread-safe.
- */
+
 class HMACAlgorithm extends Algorithm {
 
-    private  byte[] secret;
-
-    private AlgorithmType algorithmType;
+    private final byte[] secret;
+    private final AlgorithmType algorithmType;
 
     public HMACAlgorithm(AlgorithmType algorithm,String secretStr) {
         this.secret = getSecretBytes(secretStr);
@@ -57,20 +51,20 @@ class HMACAlgorithm extends Algorithm {
 
             boolean valid = MessageDigest.isEqual(sign(payloadBytes),signatureBytes);
             if (!valid) {
-                throw new SignatureVerificationException(this);
+                throw new SignatureVerificationException("Signature verification failure");
             }
-            AuthEncoder authEncoder = TLVUtil.deserialize(clazz, payloadBytes);
+            T authEncoder = TLVUtil.deserialize(clazz, payloadBytes);
             if (authEncoder==null){
-                throw new SignatureVerificationException(this);
+                throw new SignatureVerificationException("Signature verification failure");
             }
             Date issuedAt = authEncoder.getIssuedAt();
             Date expiresAt = authEncoder.getExpiresAt();
             if (!DateUtil.isDateBetweenInclusive(new Date(),issuedAt,expiresAt)){
                 throw new InvalidTokenException("token invalid");
             }
-            return (T) authEncoder;
+            return authEncoder;
         } catch (IllegalStateException  | IllegalArgumentException e) {
-            throw new SignatureVerificationException(this, e);
+            throw new SignatureVerificationException("Signature verification failure");
         }
     }
 
@@ -93,9 +87,7 @@ class HMACAlgorithm extends Algorithm {
     public byte[] sign(byte[] contentBytes)  {
         try {
             return CryptoHelper.createSignatureFor(algorithmType.name(),secret,contentBytes);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        } catch (InvalidKeyException e) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
             throw new RuntimeException(e);
         }
     }
