@@ -1,13 +1,16 @@
 package com.github.fashionbrot.controller;
 
+import com.github.fashionbrot.Token;
+import com.github.fashionbrot.common.date.DateUtil;
 import com.github.fashionbrot.service.ExampleService;
 import com.github.fashionbrot.annotation.Permission;
-import com.github.fashionbrot.common.util.MapUtil;
-import com.github.fashionbrot.util.JwtUtil;
+import com.github.fashionbrot.util.AuthUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Date;
 
 @Controller
 @RequiredArgsConstructor
@@ -19,7 +22,11 @@ public class ExampleController {
     @ResponseBody
     @RequestMapping("/login")
     public String login(){
-        return JwtUtil.encrypt(exampleService.getAlgorithm(),30*60, MapUtil.createMap("userId",1));
+        Token token=new Token();
+        token.setUserId(1);
+        token.setIssuedAt(new Date());
+        token.setExpiresAt(DateUtil.addDays(1));
+        return AuthUtil.encrypt(exampleService.getAlgorithm(),token);
     }
 
 

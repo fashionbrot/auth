@@ -1,14 +1,9 @@
 package com.github.fashionbrot.service;
 
 
-import com.auth0.jwt.algorithms.Algorithm;
-import com.github.fashionbrot.util.JwtUtil;
+import com.github.fashionbrot.algorithms.Algorithm;
 import org.springframework.stereotype.Service;
 
-import java.security.KeyPair;
-import java.security.SecureRandom;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
 
 @Service
 public class ExampleService {

@@ -6,14 +6,7 @@ public interface TokenExceptionFunction {
 
     /**
      * token 可能发生的异常
-     * AlgorithmMismatchException
-     * IncorrectClaimException
-     * InvalidClaimException
-     * JWTCreationException
-     * JWTDecodeException
-     * JWTVerificationException
-     * MissingClaimException
-     * SignatureGenerationException
+     * InvalidTokenException
      * SignatureVerificationException
      * TokenExpiredException
      *

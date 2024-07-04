@@ -1,11 +1,15 @@
 package com.github.fashionbrot.interceptor;
 
+import com.github.fashionbrot.Token;
 import com.github.fashionbrot.common.util.ObjectUtil;
 import com.github.fashionbrot.common.util.SetUtil;
 import com.github.fashionbrot.exception.AuthException;
+import com.github.fashionbrot.exception.InvalidTokenException;
+import com.github.fashionbrot.exception.SignatureVerificationException;
+import com.github.fashionbrot.exception.TokenExpiredException;
 import com.github.fashionbrot.function.*;
 import com.github.fashionbrot.service.ExampleService;
-import com.github.fashionbrot.util.JwtUtil;
+import com.github.fashionbrot.util.AuthUtil;
 import com.github.fashionbrot.util.PermissionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -33,8 +37,9 @@ public class ExampleInterceptor  implements HandlerInterceptor {
         GetTokenFunction tokenFunction = getGetTokenFunction(request);
 
 
-        Integer userId = JwtUtil.getToken(exampleService.getAlgorithm(), tokenFunction, tokenExpiredFunction, "userId", Integer.class);
-        if (userId==null){
+
+        Token token = AuthUtil.decrypt(exampleService.getAlgorithm(),Token.class,tokenFunction,tokenExceptionFunction);
+        if (token==null || token.getUserId()==null){
             return false;
         }
         Method method = getHandlerMethod(handler);
@@ -79,10 +84,18 @@ public class ExampleInterceptor  implements HandlerInterceptor {
         return tokenFunction;
     }
 
-    TokenExceptionFunction tokenExpiredFunction=(exception)->{
-        AuthException.throwMsg("token验证失败");
+    TokenExceptionFunction tokenExceptionFunction=new TokenExceptionFunction() {
+        @Override
+        public void throwException(Exception exception) {
+            if (exception instanceof InvalidTokenException){
+                AuthException.throwMsg("无效的token");
+            }else if (exception instanceof SignatureVerificationException){
+                AuthException.throwMsg("token验证失败");
+            }else if (exception instanceof TokenExpiredException){
+                AuthException.throwMsg("token已过期");
+            }
+        }
     };
-
 
     private Method getHandlerMethod(Object handler){
         if (handler!=null && handler instanceof HandlerMethod) {

@@ -28,8 +28,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-aop"
 
-    implementation 'com.github.fashionbrot:common-util:0.1.2'
-    implementation 'com.auth0:java-jwt:4.4.0'
+    implementation 'com.github.fashionbrot:common-util:0.1.4'
 }
 
 compileJava.options.encoding = "UTF-8"
