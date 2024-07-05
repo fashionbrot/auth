@@ -32,13 +32,13 @@ public class HMAC256Test {
 
 
         String token = AuthUtil.encryptHMAC256(secret, auth);
-        System.out.println(token);
-        System.out.println(token.length());
+        System.out.println("token:"+token);
 
         HMAC256Request verify = AuthUtil.decryptHMAC256(secret,HMAC256Request.class, token);
-        System.out.println(verify.toString());
-        System.out.println(verify.toString().length());
+        System.out.println("result:"+verify.toString());
 
+        //token:SAbhw6uMiDJIBuHmz4qIMkALMTg4ODg4ODg4ODgwAQw.C6TQ1q9-yRI9YLYvUesgsaYzZIW3kvjGxRHtVdPJdxc
+        //result:HMAC256Request(userId=12, mobile=18888888888)
     }
 
 
@@ -58,8 +58,7 @@ public class HMAC256Test {
         Algorithm algorithm=Algorithm.HMAC256(secret);
 
         String token = AuthUtil.encrypt(algorithm, auth);
-        System.out.println(token);
-        System.out.println(token.length());
+        System.out.println("token:"+token);
 
         GetTokenFunction getTokenFunction=new GetTokenFunction() {
             @Override
@@ -83,9 +82,9 @@ public class HMAC256Test {
 
 
         HMAC256Request verify = AuthUtil.decrypt(algorithm,HMAC256Request.class,getTokenFunction,tokenExceptionFunction);
-        System.out.println(verify.toString());
-        System.out.println(verify.toString().length());
-
+        System.out.println("result:"+verify.toString());
+        //token:SAacyO6ziDJIBpOQ1YqIMkALMTg4ODg4ODg4ODgwAQw.taHftBxsnmuqLOg7LSM4oIByctm7w5AVEPT4y9G9NSs
+        //result:HMAC256Request(userId=12, mobile=18888888888)
     }
 
 
