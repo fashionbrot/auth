@@ -8,6 +8,9 @@ import com.github.fashionbrot.exception.InvalidTokenException;
 import com.github.fashionbrot.exception.SignatureVerificationException;
 import com.github.fashionbrot.exception.TokenExpiredException;
 
+import java.util.Base64;
+import java.util.Date;
+
 
 /**
  * The Algorithm class represents an algorithm to be used in the Signing or Verification process of a Token.
@@ -37,5 +40,16 @@ public abstract class Algorithm {
     public abstract String generateToken(AuthEncoder encoder);
 
 
+    public static boolean isDateBetweenInclusive(Date dateToCheck, Date startDate, Date endDate) {
+        return !(dateToCheck.before(startDate) || dateToCheck.after(endDate));
+    }
+
+    public static byte[] base64Decode(String str){
+        return Base64.getUrlDecoder().decode(str);
+    }
+
+    public static String base64Encoder(byte[] bytes){
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+    }
 
 }

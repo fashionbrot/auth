@@ -3,17 +3,15 @@ package com.github.fashionbrot.algorithms;
 
 
 import com.github.fashionbrot.AuthEncoder;
-import com.github.fashionbrot.common.date.DateUtil;
-import com.github.fashionbrot.common.tlv.TLVUtil;
 import com.github.fashionbrot.exception.InvalidTokenException;
 import com.github.fashionbrot.exception.SignatureVerificationException;
 import com.github.fashionbrot.exception.TokenExpiredException;
+import com.github.fashionbrot.tlv.TLVUtil;
 
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.Date;
 
 
@@ -45,8 +43,8 @@ class HMACAlgorithm extends Algorithm {
             String payload = tokenSplit[0];
             String signature = tokenSplit[1];
 
-            byte[] payloadBytes = Base64.getUrlDecoder().decode(payload);
-            byte[] signatureBytes = Base64.getUrlDecoder().decode(signature);
+            byte[] payloadBytes = base64Decode(payload);
+            byte[] signatureBytes = base64Decode(signature);
 
             boolean valid = MessageDigest.isEqual(sign(payloadBytes),signatureBytes);
             if (!valid) {
@@ -58,7 +56,7 @@ class HMACAlgorithm extends Algorithm {
             }
             Date issuedAt = authEncoder.getIssuedAt();
             Date expiresAt = authEncoder.getExpiresAt();
-            if (!DateUtil.isDateBetweenInclusive(new Date(),issuedAt,expiresAt)){
+            if (!isDateBetweenInclusive(new Date(),issuedAt,expiresAt)){
                 throw new TokenExpiredException("token expired");
             }
             return authEncoder;
@@ -73,11 +71,8 @@ class HMACAlgorithm extends Algorithm {
         byte[] payloadBytes = TLVUtil.serialize(encoder);
         byte[] signatureBytes = sign(payloadBytes);
 
-
-        String payload = Base64.getUrlEncoder().withoutPadding()
-                .encodeToString(payloadBytes);
-        String signature = Base64.getUrlEncoder().withoutPadding()
-                .encodeToString(signatureBytes);
+        String payload = base64Encoder(payloadBytes);
+        String signature = base64Encoder(signatureBytes);
 
         return String.format("%s.%s",payload, signature);
     }
