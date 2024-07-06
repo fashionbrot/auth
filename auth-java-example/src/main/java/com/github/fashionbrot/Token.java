@@ -7,4 +7,6 @@ public class Token extends AuthEncoder{
 
     private Integer userId;
 
+    private String username;
+
 }

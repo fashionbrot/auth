@@ -26,6 +26,7 @@ public class ExampleController {
         token.setUserId(1);
         token.setIssuedAt(new Date());
         token.setExpiresAt(DateUtil.addDays(1));
+        token.setUsername("张三");
         return AuthUtil.encrypt(exampleService.getAlgorithm(),token);
     }
 
