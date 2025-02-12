@@ -45,16 +45,17 @@ public class PermissionUtil {
             return false;
         }
         String[] requiredPermissions = annotationFunction.value(method);
-        // Check method-level permissions
-        if (requiredPermissions!=null && requiredPermissions.length>0) {
+        if (requiredPermissions==null || requiredPermissions.length==0){
+            return true;
+        }else{
             Set<String> userPermissions = permissionFunction.getPermission();
             for (String permission : requiredPermissions) {
                 if (permission!=null && userPermissions.contains(permission)) {
                     return true;
                 }
             }
+            return false;
         }
-        return false;
     }
 
 

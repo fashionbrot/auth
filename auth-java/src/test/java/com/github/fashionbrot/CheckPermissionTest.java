@@ -126,4 +126,20 @@ public class CheckPermissionTest {
 //        System.out.println(userId);
 //    }
 
+
+    @Test
+    public void test6() throws NoSuchMethodException {
+        TestClass test=new TestClass();
+        Method method = test.getClass().getDeclaredMethod("test1", null);
+
+        boolean b = PermissionUtil.checkPermission(method, () -> {
+            return false;
+        }, () -> {
+            return SetUtil.newSet("test1");
+        });
+
+        AuthException.isTrue(!b).throwMsg("没有权限");
+
+        System.out.println(b);
+    }
 }

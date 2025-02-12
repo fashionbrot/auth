@@ -33,6 +33,7 @@ public class HMAC256Test {
 
         String token = AuthUtil.encryptHMAC256(secret, auth);
         System.out.println("token:"+token);
+        System.out.println(token.getBytes().length);
 
         HMAC256Request verify = AuthUtil.decryptHMAC256(secret,HMAC256Request.class, token);
         System.out.println("result:"+verify.toString());

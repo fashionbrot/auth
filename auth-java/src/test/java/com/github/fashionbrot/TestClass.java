@@ -11,6 +11,10 @@ public class TestClass {
 
     }
 
+//    @Permission(value = {"test2"})
+    public void test1(){
+
+    }
 
 
 }

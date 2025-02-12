@@ -123,12 +123,13 @@ configurations {
 
 dependencies {
 
-    implementation 'com.github.fashionbrot:tlv:0.0.1'
+    implementation 'com.github.fashionbrot:tlv:0.0.3'
 
     testImplementation "junit:junit:4.13.2"
     testCompileOnly 'org.projectlombok:lombok:1.18.20'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
-    testImplementation 'com.github.fashionbrot:common-util:0.1.4'
+    testImplementation 'com.github.fashionbrot:common-util:0.1.5'
+    testImplementation 'com.github.fashionbrot:tlv:0.0.3'
 }
 
 compileJava.options.encoding = "UTF-8"

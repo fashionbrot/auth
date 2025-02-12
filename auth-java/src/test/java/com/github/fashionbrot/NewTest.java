@@ -1,9 +1,8 @@
 package com.github.fashionbrot;
 
 import com.github.fashionbrot.common.date.DateUtil;
-import com.github.fashionbrot.common.tlv.TLVUtil;
 import com.github.fashionbrot.common.util.Base64Util;
-import com.github.fashionbrot.common.util.ByteUtil;
+import com.github.fashionbrot.tlv.TLVUtil;
 import org.junit.Test;
 
 import javax.crypto.Mac;
