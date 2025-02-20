@@ -1,6 +1,8 @@
 package com.github.fashionbrot;
 
 import com.github.fashionbrot.algorithms.Algorithm;
+import com.github.fashionbrot.algorithms.AlgorithmType;
+import com.github.fashionbrot.algorithms.HMACAlgorithm;
 import com.github.fashionbrot.common.date.DateUtil;
 import com.github.fashionbrot.exception.AuthException;
 import com.github.fashionbrot.exception.InvalidTokenException;
@@ -23,19 +25,21 @@ public class HMAC256Test {
 
         Date date=new Date();
 
+        Algorithm algorithm = new HMACAlgorithm(AlgorithmType.HmacSHA256, secret);
+
 
         HMAC256Request auth = new HMAC256Request();
         auth.setIssuedAt(date);
         auth.setExpiresAt(addHours(date,1));
-        auth.setUserId(12L);
+        auth.setUserId(10000000000L);
         auth.setMobile("18888888888");
 
 
-        String token = AuthUtil.encryptHMAC256(secret, auth);
+        String token = AuthUtil.encrypt(algorithm, auth);
         System.out.println("token:"+token);
         System.out.println(token.getBytes().length);
 
-        HMAC256Request verify = AuthUtil.decryptHMAC256(secret,HMAC256Request.class, token);
+        HMAC256Request verify = AuthUtil.decrypt(algorithm,HMAC256Request.class, token);
         System.out.println("result:"+verify.toString());
 
         //token:SAbhw6uMiDJIBuHmz4qIMkALMTg4ODg4ODg4ODgwAQw.C6TQ1q9-yRI9YLYvUesgsaYzZIW3kvjGxRHtVdPJdxc
@@ -48,18 +52,20 @@ public class HMAC256Test {
 
         Date date=new Date();
 
+        Algorithm algorithm = new HMACAlgorithm(AlgorithmType.HmacSHA256, secret);
+
 
         HMAC256Request auth = new HMAC256Request();
         auth.setIssuedAt(date);
         auth.setExpiresAt(DateUtil.addDays(1));
         auth.setUserId(12L);
-        auth.setMobile("18888888888");
+        auth.setMobile("你好啊我是你大爷");
 
 
-        Algorithm algorithm=Algorithm.HMAC256(secret);
 
         String token = AuthUtil.encrypt(algorithm, auth);
         System.out.println("token:"+token);
+        System.out.println(token.length());
 
         GetTokenFunction getTokenFunction=new GetTokenFunction() {
             @Override

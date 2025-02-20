@@ -34,4 +34,12 @@ public class AuthEncoder {
     public void setExpiresAt(Date expiresAt) {
         this.expiresAt = expiresAt;
     }
+
+    @Override
+    public String toString() {
+        return "AuthEncoder{" +
+                "issuedAt=" + issuedAt.getTime() +
+                ", expiresAt=" + expiresAt.getTime() +
+                '}';
+    }
 }

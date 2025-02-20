@@ -7,6 +7,8 @@ import com.github.fashionbrot.exception.InvalidTokenException;
 import com.github.fashionbrot.exception.SignatureVerificationException;
 import com.github.fashionbrot.exception.TokenExpiredException;
 import com.github.fashionbrot.tlv.TLVUtil;
+import com.github.fashionbrot.util.Base64Util;
+import com.github.fashionbrot.util.DateUtil;
 
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
@@ -15,7 +17,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 
-class HMACAlgorithm extends Algorithm {
+public class HMACAlgorithm extends Algorithm {
 
     private final byte[] secret;
     private final AlgorithmType algorithmType;
@@ -33,8 +35,18 @@ class HMACAlgorithm extends Algorithm {
         return secret.getBytes(StandardCharsets.UTF_8);
     }
 
+
+
+    public byte[] sign(byte[] contentBytes)  {
+        try {
+            return CryptoHelper.createSignatureFor(algorithmType.name(),secret,contentBytes);
+        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
-    public <T extends AuthEncoder> T verify(Class<T> clazz,String token) throws InvalidTokenException, SignatureVerificationException, TokenExpiredException {
+    public <T extends AuthEncoder> T decrypt(Class<T> clazz, String token) {
         try {
             String[] tokenSplit = token.split("\\.");
             if (tokenSplit==null  || tokenSplit.length!=2){
@@ -43,8 +55,8 @@ class HMACAlgorithm extends Algorithm {
             String payload = tokenSplit[0];
             String signature = tokenSplit[1];
 
-            byte[] payloadBytes = base64Decode(payload);
-            byte[] signatureBytes = base64Decode(signature);
+            byte[] payloadBytes = Base64Util.decode(payload);
+            byte[] signatureBytes = Base64Util.decode(signature);
 
             boolean valid = MessageDigest.isEqual(sign(payloadBytes),signatureBytes);
             if (!valid) {
@@ -56,7 +68,7 @@ class HMACAlgorithm extends Algorithm {
             }
             Date issuedAt = authEncoder.getIssuedAt();
             Date expiresAt = authEncoder.getExpiresAt();
-            if (!isDateBetweenInclusive(new Date(),issuedAt,expiresAt)){
+            if (!DateUtil.isDateBetweenInclusive(new Date(),issuedAt,expiresAt)){
                 throw new TokenExpiredException("token expired");
             }
             return authEncoder;
@@ -65,24 +77,14 @@ class HMACAlgorithm extends Algorithm {
         }
     }
 
-
     @Override
-    public String generateToken(AuthEncoder encoder) {
+    public String encrypt(AuthEncoder encoder) {
         byte[] payloadBytes = TLVUtil.serialize(encoder);
         byte[] signatureBytes = sign(payloadBytes);
 
-        String payload = base64Encoder(payloadBytes);
-        String signature = base64Encoder(signatureBytes);
+        String payload = Base64Util.encoder(payloadBytes);
+        String signature = Base64Util.encoder(signatureBytes);
 
         return String.format("%s.%s",payload, signature);
-    }
-
-
-    public byte[] sign(byte[] contentBytes)  {
-        try {
-            return CryptoHelper.createSignatureFor(algorithmType.name(),secret,contentBytes);
-        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
-            throw new RuntimeException(e);
-        }
     }
 }
